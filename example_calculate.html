@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="jsf.js"></script>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $("form").jsf();
+       });
+
+      function isInt(val) {
+        try {
+          parseInt(val);
+          return true;
+        } catch(e) {
+          return false;
+        }
+      }
+
+    </script>
+
+    <link href="example.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <h1>Calculate total incl. tax</h1>
+
+    <form>
+
+      <input type="text" name="amount" 
+             jsf:required="True"
+             jsf:constraint="isInt(amount)"
+             placeholder="Amount"
+             />
+
+      <input type="text" name="tax" 
+             jsf:required="True" 
+             jsf:constraint="isInt(amount)"
+             placeholder="Tax percentage"
+             />
+
+      Total: <input type="text" name="total" 
+                    jsf:readonly="True"
+                    jsf:calculate="(amount && tax) ? (amount + ((amount / 100) * tax)) : 0"
+                    />
+      
+    </form>
+  </body>
+
+</html>

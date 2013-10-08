@@ -158,7 +158,7 @@ jsf.Validator.prototype.readonlyCallback = function(input, ro) {
  */
 jsf.Validator.prototype.calculateCallback = function(elt, val) {
 
-  elt.val(value);
+  elt.val(val);
 };
 
 

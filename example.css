@@ -1,3 +1,11 @@
+h1 {
+    font-size: 110%;
+}
+
+body {
+    color: #505050;
+}
+
 label { 
     display: block 
 }
@@ -16,7 +24,7 @@ label {
 }
 
 .help { 
-    color: #505050; 
+    color: #a0a0a0; 
     font-size: 90% 
 }
 
