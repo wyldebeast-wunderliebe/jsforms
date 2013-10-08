@@ -9,6 +9,23 @@ jsf.JavaScriptInterpreter = function() {
 
 
 /**
+ * Try int, otherwise string...
+ */
+jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
+
+  if (val == undefined) {
+    return 'undefined';
+  }
+
+  if (parseInt(val) === val) {
+    return val;
+  }
+
+  return "'" + val + "'";
+};
+
+
+/**
  * Evaluate the code provided.
  * @param expr Expression to evaluate
  * @param data Data dict as returned by jQuery(form).serializeArray()
@@ -16,10 +33,10 @@ jsf.JavaScriptInterpreter = function() {
  */
 jsf.JavaScriptInterpreter.prototype.eval = function(expr, data, def) {
 
-  var code = ""
+  var code = "";
 
   for (var i = 0; i < data.length; i++) {
-    code += data[i].name + "= " + (data[i].value || 'undefined') + ";\n";
+    code += data[i].name + "= " + this.typeValue(data[i].value) + ";\n";
   }
 
   code += expr;
@@ -214,6 +231,20 @@ jsf.Validator.prototype.validate = function(processErrors) {
 
 
 /**
+ * Check whether the inout has a value. This is different for input
+ * types, e.g. checkboxes.
+ */
+jsf.Validator.prototype.hasValue = function(input) {
+
+  if (input.is(":checkbox")) {
+    return input.is(":checked");
+  } else {
+    return input.val();
+  }
+};
+
+
+/**
  * Check on requiredness
  * @param input Element to check
  * @param data jQuery data array
@@ -229,7 +260,7 @@ jsf.Validator.prototype.checkRequired = function(input, data, processErrors) {
     this.errorCallback(input, required && !input.val(), "required");
   }
 
-  if (required && !input.val()) {
+  if (required && !this.hasValue(input)) {
     this.valid = false;
   }
 };

@@ -10,7 +10,7 @@ label {
     display: block 
 }
 
-.error input { 
+.error input, .error select { 
     border-color: #ff0000; 
 }
 
