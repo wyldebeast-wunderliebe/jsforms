@@ -1,0 +1,30 @@
+label { 
+    display: block 
+}
+
+.error input { 
+    border-color: #ff0000; 
+}
+
+.alert { 
+    display: none; 
+    color: #ff0000 
+}
+
+.error .alert { 
+    display: block
+}
+
+.help { 
+    color: #505050; 
+    font-size: 90% 
+}
+
+.irrelevant { 
+    opacity: 0.3 
+}
+
+.required:after {
+    content: "*"; 
+    color: #ff0000 
+}

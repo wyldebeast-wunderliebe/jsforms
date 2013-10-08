@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <script src="skulpt.min.js" type="text/javascript">
+    </script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="jsf.js"></script>
+    <script src="pyjsf.js"></script>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $("form").jsf({
+          interpreter: new jsf.PythonInterpreter(),
+          selectInput: function(elt) { return elt.parent() }
+         });
+       });
+
+    </script>
+
+    <link href="example.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <form>
+
+      <div>
+        <label>foo</label>        
+        <input type="text" name="foo" 
+               jsf:required="True"
+               jsf:relevant="True"
+               />
+      </div>
+
+      <div>      
+        <label>bar</label>
+        <div class="help">Required if foo = 666. Relevant if foo &gt; 12</div>
+        <div class="alert">Required if foo = 666</div>
+        <input type="text" name="bar" 
+               jsf:required="foo == 666" 
+               jsf:relevant="foo &gt; 12"
+               />
+      </div>
+
+      <div>
+        <label>zzz</label>
+        <div class="help">Must be bigger than 23. Read only if foo = 4</div>
+        <div class="alert">Must be bigger than 23</div>
+        <input type="text" name="zzz" 
+               jsf:readonly="foo == 4"
+               jsf:constraint="zzz &gt; 23"
+               />
+      </div>
+
+      <input type="submit" value="ok" />
+    </form>
+  </body>
+
+</html>
