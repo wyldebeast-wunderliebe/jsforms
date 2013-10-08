@@ -232,12 +232,14 @@ jsf.Validator.prototype.validate = function(processErrors) {
 
 /**
  * Check whether the inout has a value. This is different for input
- * types, e.g. checkboxes.
+ * types, e.g. checkboxes and radio.
  */
 jsf.Validator.prototype.hasValue = function(input) {
 
   if (input.is(":checkbox")) {
     return input.is(":checked");
+  } else if (input.is(":radio")) {
+    return this.form.find(":radio[name=" + input.attr("name") + "]:checked").length;
   } else {
     return input.val();
   }
