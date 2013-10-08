@@ -20,6 +20,29 @@ are automagically added.
 
 Requires jQuery. If you use Python expressions, requires Skulpt.
 
+Example (check the examples for JS includes, etc.):
+
+    <form>
+
+      <input type="text" name="foo" 
+             jsf:required="True"
+             jsf:relevant="True"
+             />
+
+      <input type="text" name="bar" 
+             jsf:required="foo == 666" 
+             jsf:relevant="foo &gt; 12"
+             />
+
+      <input type="text" name="zzz" 
+             jsf:readonly="foo == 4"
+             jsf:constraint="zzz &gt; 23"
+             />
+
+      <input type="submit" value="ok" />
+    </form>
+
+
 
 Validation
 ----------
@@ -114,8 +137,7 @@ default value:
 
 In case the expression fails to return a result, the default should be
 returned. If you wish to write your own interpreter, for instance to
-allow Perl expressions, copy one of jsjsf.js or pyjsf.js and start
-coding...
+allow Perl expressions, copy pyjsf.js and start coding...
 
 
 Configure validation
