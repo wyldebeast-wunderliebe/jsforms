@@ -139,6 +139,8 @@ In case the expression fails to return a result, the default should be
 returned. If you wish to write your own interpreter, for instance to
 allow Perl expressions, copy pyjsf.js and start coding...
 
+Expressions can use data from other inputs. Simply use the name of the
+input in the expression. Check example code.
 
 Configure validation
 --------------------
