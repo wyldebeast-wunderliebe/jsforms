@@ -58,10 +58,7 @@ jsf.Validator = function(form, options) {
   self.form.submit(function(e) {
       
       try {  
-        if (self.form.attr("jsf:validate") != false) {
-          
-          self.validate(true);
-        } 
+        self.validate(true);
       }
       catch(e) {
         // pass
