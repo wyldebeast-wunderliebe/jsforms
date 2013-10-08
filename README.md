@@ -15,7 +15,7 @@ Usage
 
 Check the source for some HTML examples. Note that with some smart CSS
 you can save yourself from all kinds of trouble. The form will be
-validated at init time, so that classes for requiredness and the likes
+validated at initialization time, so that classes for requiredness and the likes
 are automagically added.
 
 Requires jQuery. If you use Python expressions, requires Skulpt.
@@ -62,15 +62,15 @@ Does this remind you somehow of XForms? Well, how odd... A form is
 considered to be valid if all constraints are met, and no required
 fields have not been filled. Validation will be done on every change
 event, to be able to show results to the user. This is performed by
-callback functions, that add and remove classes on the input
-elements. Callback functions are user-configurable, so as to specify
+call-back functions, that add and remove classes on the input
+elements. Call-back functions are user-configurable, so as to specify
 what should happen.
 
 
 ### required ###
 
 Requiredness means that some input needs to be filled by the user, for
-the form to be valid. Defaults to false. The callback function sets or
+the form to be valid. Defaults to false. The call-back function sets or
 removes the class 'required'. If something is required and not filled
 in, the class 'error' is set on the input element.
 
@@ -85,7 +85,7 @@ Example:
 Relevance means that an input is irrelevant for the form data. For
 instance, when somebody fills in that the age is 5, than the question
 for marital status is (very likely to be) irrelevant. Defaults to
-true. The callback sets or removes the class 'irrelevant'.
+true. The call-back sets or removes the class 'irrelevant'.
 
 Example:
 
@@ -95,7 +95,7 @@ Example:
 
 ### readonly ###
 
-Indicate that a variabel is to be protected from writing. Defaults to
+Indicate that a variable is to be protected from writing. Defaults to
 false. Toggles the class 'readonly'.
 
 Example:
@@ -144,8 +144,8 @@ Configure validation
 --------------------
 
 You can configure the validation as per your needs. Redefine any of
-the callback functions to change behaviour (check jsf.js).  All
-callback methods use jsf.Validation.selectInput to obtain the element
+the call-back functions to change behavior (check jsf.js).  All
+call-back methods use jsf.Validation.selectInput to obtain the element
 to set/remove classes upon. Override this if your inputs are embedded
 within div's or other elements. Example:
 
