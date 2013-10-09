@@ -1,13 +1,19 @@
 JSForms
 =======
 
-Intro
------
+Summary
+-------
 
-JSForms (short: JSF) is an effort to do client side validation in a
-structured way. The project's aim is to save form designers from
+JSForms (short: JSF) is an effort to do client side form validation in
+a structured way. The project's aim is to save form designers from
 writing custom JavaScript to do form validation. The way this is done
-is by using HTML attributes in a separate namespace: jsf.
+is by using HTML attributes in a separate namespace (jsf) to define
+what is needed for a form to be valid. Definitions may involve complex
+expressions to determine requiredness, relevance, contraints,
+etc. This allows you to say for instance: 'education is required if
+age is greater than 12' or 'job of partner is irrelevant if single is
+true'. This provides quite a bit more flexibility in your forms than
+just saying: 'this is required'. Read on for examples.
 
 
 Usage
