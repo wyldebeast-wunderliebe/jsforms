@@ -43,6 +43,36 @@ Example (check the examples for JS includes, etc.):
     </form>
 
 
+Browser support
+---------------
+
+Should work in any modern browser with JavaScript enabled. No, that
+does probably not include IE6.
+
+FAQ
+---
+
+### Is it stable and ready for production? ###
+
+No. Use at your own risk. You have the source, now don't you?
+
+
+### Why use namespaced attributes instead of 'data-' attributes? ###
+
+I like this better.
+
+
+### Is JSF a security consideration? ###
+
+Yes it is. Expressions are evaluated, so arbitrary code can be
+executed. Your browser may explode, but only if you use IE.
+
+
+### Does this make server side validation redundant? ###
+
+No it doesn't. Evil characters may still POST erroneous data to the
+server.
+
 
 Validation
 ----------
@@ -145,13 +175,36 @@ input in the expression. Check example code.
 Configure validation
 --------------------
 
-You can configure the validation as per your needs. Redefine any of
-the call-back functions to change behavior (check jsf.js).  All
-call-back methods use jsf.Validation.selectInput to obtain the element
-to set/remove classes upon. Override this if your inputs are embedded
-within div's or other elements. Example:
+You can configure JSF as per your needs. Redefine any of the call-back
+functions to change behavior (check jsf.js for functions named
+xxxCallback).  All call-back methods use jsf.Validation.selectInput to
+obtain the element to set/remove classes upon. Override this if your
+inputs are embedded within div's or other elements. Example:
 
     $("form").jsf({
               selectInput: function(elt) { return elt.parent() }
+         });
+       });
+
+
+Override the requiredCallback:
+
+    $("form").jsf({
+              requiredCallback: function(elt) { elt.append("<blink>!</blink>" }
+         });
+       });
+
+You can also override classes that are set on requiredness, relevance, etc:
+
+ * requiredClass
+ * readonlyClass
+ * constraintClass
+ * irrelevantClass
+ * errorClass
+
+like so:
+
+    $("form").jsf({
+             errorClass: "aaaaaaaargh"
          });
        });

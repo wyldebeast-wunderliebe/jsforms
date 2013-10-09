@@ -63,6 +63,13 @@ jsf.Validator = function(form, options) {
   self.form = form;
   self.valid = true;
 
+  // Some settings
+  self.requiredClass = "required";
+  self.errorClass = "error";
+  self.irrelevantClass = "irrelevant";
+  self.readonlyClass = "readonly"
+  self.constraintClass = "constraint-violation";
+  
   $.extend(self, options);
 
   // Do initial round to calulate relevance, requiredness, etc.
@@ -108,9 +115,9 @@ jsf.Validator.prototype.requiredCallback = function(elt, req) {
   elt = this.selectInput(elt);
 
   if (req) {
-    elt.addClass("required");
+    elt.addClass(this.requiredClass);
   } else {
-    elt.removeClass("required");
+    elt.removeClass(this.requiredClass);
   }
 };
 
@@ -125,9 +132,9 @@ jsf.Validator.prototype.relevantCallback = function(elt, rel) {
   elt = this.selectInput(elt);
 
   if (rel) {
-    elt.removeClass("irrelevant");
+    elt.removeClass(this.irrelevantClass);
   } else {
-    elt.addClass("irrelevant");
+    elt.addClass(this.irrelevantClass);
   }
 };
 
@@ -142,9 +149,9 @@ jsf.Validator.prototype.constraintCallback = function(elt, ok) {
   elt = this.selectInput(elt);
 
   if (!ok) {
-    elt.addClass("constraint-error");
+    elt.addClass(this.constraintClass);
   } else {
-    elt.removeClass("constraint-error");
+    elt.removeClass(this.constraintClass);
   }
 };
 
@@ -159,10 +166,10 @@ jsf.Validator.prototype.readonlyCallback = function(input, ro) {
   elt = this.selectInput(input);
 
   if (ro) {
-    elt.addClass("readonly");
+    elt.addClass(this.readonlyClass);
     input.attr('disabled','disabled');
   } else {
-    elt.removeClass("readonly");
+    elt.removeClass(this.readonlyClass);
     input.removeAttr('disabled');
   }
 };
@@ -190,9 +197,9 @@ jsf.Validator.prototype.errorCallback = function(elt, err, errType) {
   elt = this.selectInput(elt);
   
   if (err) {
-    elt.addClass("error");
+    elt.addClass(this.errorClass);
   } else {
-    elt.removeClass("error");
+    elt.removeClass(this.errorClass);
   }
 };
 
@@ -340,6 +347,6 @@ jsf.Validator.prototype.eval = function(expr, data, def) {
   return this.interpreter.eval(expr, data, def);
 };
 
-
+// Extend jQuery objects with the jsf function
 $.fn.extend({jsf: function(options) { 
       this.each(function() {new jsf.Validator($(this), options) })}});
