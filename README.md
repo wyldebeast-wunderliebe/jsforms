@@ -19,10 +19,12 @@ just saying: 'this is required'. Read on for examples.
 Usage
 -----
 
-Check the source for some HTML examples. Note that with some smart CSS
-you can save yourself from all kinds of trouble. The form will be
-validated at initialization time, so that classes for requiredness and the likes
-are automagically added.
+The validation code is written as a jQuery plugin. Check the source
+for some HTML examples and on what to include for different
+setups. Note that with some smart CSS you can save yourself from all
+kinds of trouble; the form will be validated at initialization time,
+so that classes for requiredness and the likes are automagically
+added.
 
 Requires jQuery. If you use Python expressions, requires Skulpt.
 
