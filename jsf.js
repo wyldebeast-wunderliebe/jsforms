@@ -20,15 +20,13 @@ jsf.JavaScriptInterpreter = function() {
  */
 jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
 
-  if (val === undefined) {
-    return 'undefined';
-  }
+  intVal = parseInt(val);
 
-  if (parseInt(val) === val) {
+  if (!isNaN(intVal)) {
+    return intVal;
+  } else {
     return val;
   }
-
-  return "'" + val + "'";
 };
 
 
@@ -39,6 +37,12 @@ jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
  * @param def Default value
  */
 jsf.JavaScriptInterpreter.prototype.eval = function(expr, data, def) {
+
+  var self = this;
+
+  $.each(data, function(key, value) {
+    data[key] = self.typeValue(value);
+  });
 
   try {
     return (new Function("with(this) { return " + expr + "}")).call(data);
@@ -133,37 +137,14 @@ jsf.Validator.prototype.init = function() {
 
   self.form.find(":input,fieldset,.form-group").each(function() {
 
-      input = $(this);
+    input = $(this);
 
-      if (self.getExpression(input, "required")) {
-          self.check_inputs.push(input);
-          self.findEffectiveInputs(input,
-                                   self.getExpression(input, "required"));
-      } 
-
-      if (self.getExpression(input, "relevant")) {
-          self.check_inputs.push(input);
-          self.findEffectiveInputs(input,
-                                   self.getExpression(input, "relevant"));
-      }
-
-      if (self.getExpression(input, "constraint")) {
-          self.check_inputs.push(input);         
-          self.findEffectiveInputs(input,
-                                   self.getExpression(input, "required"));
-      } 
-
-      if (self.getExpression(input, "calculate")) {
-          self.check_inputs.push(input);
-          self.findEffectiveInputs(input,
-                                   self.getExpression(input, "required"));
-      }
-
-      if (self.getExpression(input, "readonly")) {
-          self.check_inputs.push(input);         
-          self.findEffectiveInputs(input,
-                                   self.getExpression(input, "required"));
-      }
+    $.each(['required', 'relevant', 'readonly', 'calculate', 'constraint'],
+           function(idx, expr) {
+             if (self.getExpression(input, expr)) {
+               self.check_inputs.push(input);
+               self.findEffectiveInputs(input, self.getExpression(input, expr));
+             }});
   });
 };
 

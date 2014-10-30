@@ -7,16 +7,13 @@
 
       $(document).ready(function() {
 
-        $("form").jsf();
+        $("form").jsf({
+          selectInput: function(elt) { return elt.parent() }
+         });
        });
 
       function isInt(val) {
-        try {
-          parseInt(val);
-          return true;
-        } catch(e) {
-          return false;
-        }
+        return !isNaN(parseInt(val));
       }
 
     </script>
@@ -31,19 +28,19 @@
     <form>
 
       <input type="text" name="amount" 
-             jsf:required="True"
+             jsf:required="true"
              jsf:constraint="isInt(amount)"
              placeholder="Amount"
              />
 
       <input type="text" name="tax" 
-             jsf:required="True" 
+             jsf:required="true" 
              jsf:constraint="isInt(amount)"
              placeholder="Tax percentage"
              />
 
       Total: <input type="text" name="total" 
-                    jsf:readonly="True"
+                    jsf:readonly="true"
                     jsf:calculate="(amount && tax) ? (amount + ((amount / 100) * tax)) : 0"
                     />
       
