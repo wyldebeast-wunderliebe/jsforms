@@ -1,0 +1,22 @@
+{
+  "name": "jsforms",
+  "version": "1.0.0a",
+  "title": "JSForms",
+  "description": "Form validation jQuery plugin",
+  "keywords": [
+    "jquery",
+    "plugin",
+    "form",
+    "validation",
+  ],
+  "homepage": "https://github.com/wyldebeast-wunderliebe/jsforms",
+  "author": {
+    "name": "Duco Dokter",
+    "url": "http://w20e.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wyldebeast-wunderliebe/jsforms.git"
+  },
+  "bugs": "https://github.com/wyldebeast-wunderliebe/jsforms/issues"
+}
