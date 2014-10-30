@@ -81,8 +81,9 @@ No. Use at your own risk. You have the source, now don't you?
 
 ### Why use namespaced attributes instead of 'data-' attributes? ###
 
-I like this better.
-
+1. I like this better.
+2. It saves you from potential quote/double quote trouble
+3. JSF _does_ support the data-jsf variant too
 
 ### Is JSF a security consideration? ###
 
@@ -144,6 +145,15 @@ Example:
     <input type="text" name="age" />
     <input type="text" name="maritalstatus" jsf:relevant="age &gt; 8" />
 
+Relevance may also be applied to complete fieldsets, like so:
+
+    <fieldset jsf:relevant="foo == 4">
+    ...
+    </fieldset>
+
+This way you can show/hide sets of controls without specifying
+relevance rules per control.
+
 
 ### readonly ###
 
@@ -193,6 +203,7 @@ allow Perl expressions, copy pyjsf.js and start coding...
 
 Expressions can use data from other inputs. Simply use the name of the
 input in the expression. Check example code.
+
 
 Configure validation
 --------------------
