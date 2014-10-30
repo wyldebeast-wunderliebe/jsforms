@@ -8,17 +8,21 @@ jsf.PythonInterpreter = function() {
 /**
  * Try int, otherwise string...
  */
-jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
+jsf.PythonInterpreter.prototype.typeValue = function(val) {
 
-  if (val == undefined) {
+  if (val === undefined) {
     return 'None';
   }
 
-  if (parseInt(val) === val) {
-    return val;
-  }
+  intVal = parseInt(val);
 
-  return "'" + val + "'";
+  if (!isNaN(intVal)) {
+    return val;
+  } else if (!val) {
+    return "''";
+  } else {
+    return "'" + val + "'";
+  }
 };
 
 
@@ -31,10 +35,11 @@ jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
 jsf.PythonInterpreter.prototype.eval = function(expr, data, def) {
 
   var code = "def run():\n";
+  var self = this;
 
-  for (var i = 0; i < data.length; i++) {
-    code += "  " + data[i].name + "= " + this.typeValue(data[i].value) + ";\n"
-  }
+  $.each(data, function(key, value) {
+    code += "  " + key + "= " + self.typeValue(value) + ";\n";
+  });
 
   code += "  return " + expr;
 
@@ -45,6 +50,7 @@ jsf.PythonInterpreter.prototype.eval = function(expr, data, def) {
 
     return res.v;
   } catch (e) {
+    console.log(e);
     return def;
   }
 };

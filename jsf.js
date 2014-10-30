@@ -1,3 +1,10 @@
+/**
+ * The JSF functions enable client side validation of forms, with
+ * respect to relevance, requiredness, read-only-ness, calculated
+ * values and constraints. These notions can be applied on a control,
+ * or on a fieldset.
+ */
+
 var jsf = {};
 
 
@@ -13,7 +20,7 @@ jsf.JavaScriptInterpreter = function() {
  */
 jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
 
-  if (val == undefined) {
+  if (val === undefined) {
     return 'undefined';
   }
 
@@ -33,16 +40,8 @@ jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
  */
 jsf.JavaScriptInterpreter.prototype.eval = function(expr, data, def) {
 
-  var code = "";
-
-  for (var i = 0; i < data.length; i++) {
-    code += data[i].name + "= " + this.typeValue(data[i].value) + ";\n";
-  }
-
-  code += expr;
-
   try {
-    return eval(code);
+    return (new Function("with(this) { return " + expr + "}")).call(data);
   } catch (e) {
     return def;
   }
@@ -59,6 +58,10 @@ jsf.Validator = function(form, options) {
 
   var self = this;
 
+  // list of inputs that actually DO something to others
+  self.effective_inputs = [];
+  self.check_inputs = [];
+
   self.interpreter = new jsf.JavaScriptInterpreter();
   self.form = form;
   self.valid = true;
@@ -67,29 +70,101 @@ jsf.Validator = function(form, options) {
   self.requiredClass = "required";
   self.errorClass = "error";
   self.irrelevantClass = "irrelevant";
-  self.readonlyClass = "readonly"
+  self.readonlyClass = "readonly";
   self.constraintClass = "constraint-violation";
-  
+
   $.extend(self, options);
+
+  self.init();
 
   // Do initial round to calulate relevance, requiredness, etc.
   self.validate();
 
-  self.form.find(":input").change(function() {
-      self.validate();
-    });
+  self.form.find(":input").change(function(e) {
+
+      var input = $(e.currentTarget);
+      self.validate(false, self.effective_inputs[input.attr("name")] || []);
+  });
   
   self.form.submit(function(e) {
       
       try {  
         self.validate(true);
       }
-      catch(e) {
+      catch(err) {
         // pass
       }
-      
+
       return self.valid;
     });
+};
+
+
+/**
+ * Preform some rough checking on potential variables in the expression.
+ * @param input The input that holds the expression
+ * @param expr Expression
+ */
+jsf.Validator.prototype.findEffectiveInputs = function(input, expr) {
+
+    var self = this;
+    var matches = expr.match(/\w+/g);
+
+    if (matches) {
+        for (var i = 0; i < matches.length; i++) {
+            if (self.form.find(":input[name='" + matches[i] + "']").length) {
+                if (!self.effective_inputs[matches[i]]) {
+                    self.effective_inputs[matches[i]] = [];
+                }
+                self.effective_inputs[matches[i]].push(input);
+            }
+        }
+    }
+};
+
+
+/**
+ * Initialize validator
+ */
+jsf.Validator.prototype.init = function() {
+
+  var self = this;
+  var input, other_input, expr;
+
+  self.form.find(":input,fieldset,.form-group").each(function() {
+
+      input = $(this);
+
+      if (self.getExpression(input, "required")) {
+          self.check_inputs.push(input);
+          self.findEffectiveInputs(input,
+                                   self.getExpression(input, "required"));
+      } 
+
+      if (self.getExpression(input, "relevant")) {
+          self.check_inputs.push(input);
+          self.findEffectiveInputs(input,
+                                   self.getExpression(input, "relevant"));
+      }
+
+      if (self.getExpression(input, "constraint")) {
+          self.check_inputs.push(input);         
+          self.findEffectiveInputs(input,
+                                   self.getExpression(input, "required"));
+      } 
+
+      if (self.getExpression(input, "calculate")) {
+          self.check_inputs.push(input);
+          self.findEffectiveInputs(input,
+                                   self.getExpression(input, "required"));
+      }
+
+      if (self.getExpression(input, "readonly")) {
+          self.check_inputs.push(input);         
+          self.findEffectiveInputs(input,
+                                   self.getExpression(input, "required"));
+      }
+  });
 };
 
 
@@ -195,7 +270,7 @@ jsf.Validator.prototype.calculateCallback = function(elt, val) {
 jsf.Validator.prototype.errorCallback = function(elt, err, errType) {
 
   elt = this.selectInput(elt);
-  
+
   if (err) {
     elt.addClass(this.errorClass);
   } else {
@@ -208,48 +283,97 @@ jsf.Validator.prototype.errorCallback = function(elt, err, errType) {
  * Do the actual validation
  * @param processErrors Do error handling.
  */
-jsf.Validator.prototype.validate = function(processErrors) {
+jsf.Validator.prototype.validate = function(processErrors, inputs) {
 
   var self = this;
-  var data = self.form.serializeArray();
+  var data = {};
+  var input;
 
   self.valid = true;
 
-  self.form.find(":input").filter(function() { return $(this).attr('jsf:required'); }).each(function() {
-      self.checkRequired($(this), data, processErrors);
-    });
+  self.form.addClass("validate");
 
-  self.form.find(":input").filter(function() { return $(this).attr('jsf:relevant'); }).each(function() {
-      self.checkRelevant($(this), data);
-    });
-  
-  self.form.find(":input").filter(function() { return $(this).attr('jsf:readonly'); }).each(function() {
-      self.checkReadonly($(this), data);
-    });
+  if (inputs === undefined) {
+    inputs = self.check_inputs;
+  }
 
-  self.form.find(":input").filter(function() { return $(this).attr('jsf:constraint'); }).each(function() {
-      self.checkConstraint($(this), data, processErrors);
-    });
+  self.form.find(":input").each(function() {          
+    data[$(this).attr("name")] = self.getValue($(this));
+  });
 
-  self.form.find(":input").filter(function() { return $(this).attr('jsf:calculate'); }).each(function() {
-      self.calculate($(this), data);
-    });
+  for (var i = 0; i < inputs.length; i++) {
+
+    input = inputs[i];
+
+    if (self.checkRelevant(input, data)) {
+      self.checkRequired(input, data, processErrors);
+    }
+    self.checkReadonly(input, data);
+    self.checkConstraint(input, data, processErrors);
+    self.calculate(input, data);
+  };
+
+  self.form.removeClass("validate");
 };
 
 
 /**
- * Check whether the inout has a value. This is different for input
- * types, e.g. checkboxes and radio.
+ * Check whether the input has a value. This is different for input
+ * types, e.g. checkboxes and radio. If the given input is a group,
+ * check all descendant elements.
+ * @param input Input element (jQuery wrapped)
  */
 jsf.Validator.prototype.hasValue = function(input) {
+
+  var self = this;
 
   if (input.is(":checkbox")) {
     return input.is(":checked");
   } else if (input.is(":radio")) {
     return this.form.find(":radio[name=" + input.attr("name") + "]:checked").length;
+  } else if (input.is(".form-group") || input.is("fieldset")) {
+
+    var hasVal = false;
+
+    input.find(":input").each(function() {
+
+      if (self.hasValue($(this))) {
+        hasVal = true;
+      }
+    });
+
+    return hasVal;
+
   } else {
     return input.val();
   }
+};
+
+
+/**
+ * Get the input value. This is different for input types,
+ * e.g. checkboxes and radio.
+ */
+jsf.Validator.prototype.getValue = function(input) {
+
+  if (input.is(":checkbox")) {
+    return input.is(":checked");
+  } else if (input.is(":radio")) {
+      return this.form.find(":radio[name=" + input.attr("name") + "]:checked").val();
+  } else {
+    return input.val();
+  }
+};
+
+
+/**
+ * Get the epression for the given type.
+ * @param input Input element
+ * @param type One of required, relevant, readonly, constraint or calculate
+ */
+jsf.Validator.prototype.getExpression = function(input, type) {
+  
+  return input.attr("jsf:" + type) || "";
 };
 
 
@@ -261,30 +385,63 @@ jsf.Validator.prototype.hasValue = function(input) {
  */
 jsf.Validator.prototype.checkRequired = function(input, data, processErrors) {
 
-  var required = this.eval(input.attr("jsf:required"), data, false);
+  var self = this;
 
-  this.requiredCallback(input, required);
+  var required_expr = self.getExpression(input, 'required');
+   
+  if (!required_expr) {
+    return false;
+  }
+    
+  var required = self.eval(required_expr, data, false);
+
+  self.requiredCallback(input, required);
 
   if (processErrors) {
-    this.errorCallback(input, required && !input.val(), "required");
+    self.errorCallback(input, required && !self.hasValue(input), "required");
   }
 
-  if (required && !this.hasValue(input)) {
-    this.valid = false;
+  if (required && !self.hasValue(input)) {
+    self.valid = false;
   }
+
+  return required;
 };
 
 
 /**
- * Check on relevance
+ * Check on relevance. This check travels up the DOM looking for
+ * parents that hold relevance expressions. All these expressions are
+ * concatenated with an 'and' clause, so all must be relevant for the
+ * control to be relevant.
+ *
  * @param input Element to check
  * @param data jQuery data array
  */
 jsf.Validator.prototype.checkRelevant = function(input, data) {
 
-  var relevant = this.eval(input.attr("jsf:relevant"), data, true);
+  var self = this;
+  var relevant_expr = self.getExpression(input, 'relevant') || 'true';
+  var parent_expr;
 
-  this.relevantCallback(input, relevant);
+  input.parents("fieldset").each(function() {
+
+    parent_expr = self.getExpression($(this), "relevant");
+
+    if (parent_expr) {
+      relevant_expr += " && (" + parent_expr + ")";
+    }
+  });
+
+  if (!relevant_expr) {
+    return true;
+  }
+
+  var relevant = self.eval(relevant_expr, data, true);
+
+  self.relevantCallback(input, relevant);
+
+  return relevant;
 };
 
 
@@ -295,7 +452,13 @@ jsf.Validator.prototype.checkRelevant = function(input, data) {
  */
 jsf.Validator.prototype.checkReadonly = function(input, data) {
 
-  var readonly = this.eval(input.attr("jsf:readonly"), data, false);
+  var readonly_expr = this.getExpression(input, 'readonly');
+   
+  if (!readonly_expr) {
+    return false;
+  }
+
+  var readonly = this.eval(readonly_expr, data, false);
 
   this.readonlyCallback(input, readonly);
 };
@@ -309,7 +472,13 @@ jsf.Validator.prototype.checkReadonly = function(input, data) {
  */
 jsf.Validator.prototype.checkConstraint = function(input, data, processErrors) {
 
-  var ok = this.eval(input.attr("jsf:constraint"), data, true);
+  var constraint_expr = this.getExpression(input, 'constraint');
+
+  if (!constraint_expr) {
+    return true;
+  }
+
+  var ok = this.eval(constraint_expr, data, true);
 
   this.constraintCallback(input, ok);
 
@@ -330,7 +499,13 @@ jsf.Validator.prototype.checkConstraint = function(input, data, processErrors) {
  */
 jsf.Validator.prototype.calculate = function(input, data) {
 
-  var value = this.eval(input.attr("jsf:calculate"), data);
+  var calculate_expr = this.getExpression(input, 'calculate');
+
+  if (!calculate_expr) {
+    return true;
+  }
+
+  var value = this.eval(calculate_expr, data);
 
   this.calculateCallback(input, value);
 };
@@ -347,6 +522,10 @@ jsf.Validator.prototype.eval = function(expr, data, def) {
   return this.interpreter.eval(expr, data, def);
 };
 
+
 // Extend jQuery objects with the jsf function
 $.fn.extend({jsf: function(options) { 
-      this.each(function() {new jsf.Validator($(this), options) })}});
+      this.each(function() {
+        new jsf.Validator($(this), options);
+      });
+}});

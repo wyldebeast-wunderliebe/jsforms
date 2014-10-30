@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="jsf.js"></script>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $("form").jsf({
+          selectInput: function(elt) { 
+            if (elt.is("fieldset")) {
+              return elt;
+            } else {
+              return elt.parent();
+            };
+          }})});
+
+    </script>
+
+    <link href="example.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <form>
+
+      <div>
+        <label>What is your favorite color?</label>
+        <select name="color" 
+               jsf:required="true"
+               jsf:relevant="true"
+                >
+          <option value="">Pick a color!</option>
+          <option>red</option>
+          <option>yellow</option>
+          <option>blue</option>
+        </select>
+      </div>
+
+      <fieldset jsf:relevant="color == 'red'">      
+        <legend>So, you like red...</legend>
+
+        <div>
+          <label>Do you like crimson</label>
+          <input type="checkbox" name="crimson" />
+        </div>
+
+        <div>
+          <label>Do you like infrared</label>
+          <input type="checkbox" name="infrared" />
+        </div>
+      </fieldset>
+
+      <fieldset jsf:relevant="color == 'yellow'">      
+        <legend>So, you like yellow...</legend>
+
+        <div>
+          <label>What kind of yellow?</label>
+          <input type="text" name="yellow" />
+        </div>
+      </fieldset>
+
+      <fieldset jsf:relevant="color == 'blue'">      
+        <legend>So, you like blue...</legend>
+
+        <div>
+          <label>Do you like blues too?</label>
+          <input type="text" name="blue" />
+        </div>
+
+      </fieldset>
+
+      <input type="submit" value="ok" />
+    </form>
+  </body>
+
+</html>

@@ -50,6 +50,20 @@ Example (check the examples for JS includes, etc.):
       <input type="submit" value="ok" />
     </form>
 
+If you insist on using data attributes instead of the jsf namespace,
+you can do that also:
+
+    <form>
+
+      <input type="text" name="foo" 
+             data-jsf='{"required":"True","relevant":"False"}'
+             />
+
+    </form>
+
+Please note that the value of _data-jsf_ needs to be valid JSON, so the
+attribute needs to be set with the proper (single) quotes.
+
 
 Browser support
 ---------------
