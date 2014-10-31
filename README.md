@@ -26,15 +26,25 @@ kinds of trouble; the form will be validated at initialization time,
 so that classes for requiredness and the likes are automagically
 added.
 
-Requires jQuery. If you use Python expressions, requires Skulpt.
+Requires jQuery. If you use Python expressions, requires Skulpt. Basic
+use is like so, assuming you have downloaded the JSF code:
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="jsf.js"></script>
+    <script>
+      $(document).ready(function() {
+        $("form").jsf();
+       });
+    </script>
+
 
 Example (check the examples for JS includes, etc.):
 
     <form>
 
       <input type="text" name="foo" 
-             jsf:required="True"
-             jsf:relevant="True"
+             jsf:required="true"
+             jsf:relevant="true"
              />
 
       <input type="text" name="bar" 
@@ -56,34 +66,37 @@ you can do that also:
     <form>
 
       <input type="text" name="foo" 
-             data-jsf='{"required":"True","relevant":"False"}'
+             data-jsf='{"required":"true","relevant":"false"}'
              />
 
     </form>
 
-Please note that the value of _data-jsf_ needs to be valid JSON, so the
-attribute needs to be set with the proper (single) quotes.
+Please note that the value of _data-jsf_ needs to be valid JSON, so
+the attribute value (an associative array) needs to be set with the
+proper (single) quotes.
 
 
 Browser support
 ---------------
 
 Should work in any modern browser with JavaScript enabled. No, that
-does probably not include IE6.
+does probably not include IE6. I didn't test; don't care.
 
 FAQ
 ---
 
 ### Is it stable and ready for production? ###
 
-No. Use at your own risk. You have the source, now don't you?
+No. Use at your own risk. You have the source, now don't you? It's
+been used in a production system though, and no one died yet.
 
 
 ### Why use namespaced attributes instead of 'data-' attributes? ###
 
 1. I like this better.
-2. It saves you from potential quote/double quote trouble
-3. JSF _does_ support the data-jsf variant too
+2. It saves you from potential quote/double quote trouble.
+3. JSF _does_ support the data-jsf variant too.
+
 
 ### Is JSF a security consideration? ###
 
@@ -241,3 +254,20 @@ like so:
              errorClass: "aaaaaaaargh"
          });
        });
+
+
+License
+-------
+
+BEER-WARE LICENSE
+
+Version 666, July 2012
+
+You can use this stuff and do whatever you like with it on the
+following condition:
+
+0. Would you ever be in a situation where you are able to offer
+   us, or one of us, a beer, or if unavailable, an alcoholic 
+   beverage of your choice, you must do so.
+
+   Wyldebeast & Wunderliebe

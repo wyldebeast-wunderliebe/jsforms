@@ -1,13 +1,17 @@
 {
   "name": "jsforms",
-  "version": "1.0.0a",
+  "version": "1.0.0",
+  "main": "jsf.js",
   "title": "JSForms",
   "description": "Form validation jQuery plugin",
+  "dependencies": {
+    "jquery": ">1.9.0"
+  },
   "keywords": [
     "jquery",
     "plugin",
     "form",
-    "validation",
+    "validation"
   ],
   "homepage": "https://github.com/wyldebeast-wunderliebe/jsforms",
   "author": {
