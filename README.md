@@ -9,7 +9,7 @@ a structured way. The project's aim is to save form designers from
 writing custom JavaScript to do form validation. The way this is done
 is by using HTML attributes in a separate namespace (jsf) to define
 what is needed for a form to be valid. Definitions may involve complex
-expressions to determine requiredness, relevance, contraints,
+expressions to determine requiredness, relevance, constraints,
 etc. This allows you to say for instance: 'education is required if
 age is greater than 12' or 'job of partner is irrelevant if single is
 true'. This provides quite a bit more flexibility in your forms than
@@ -22,8 +22,8 @@ Usage
 The validation code is written as a jQuery plugin. Check the source
 for some HTML examples and on what to include for different
 setups. Note that with some smart CSS you can save yourself from all
-kinds of trouble; the form will be validated at initialization time,
-so that classes for requiredness and the likes are automagically
+kinds of trouble; the form will be validated at initialisation time,
+so that classes for requiredness and the likes are auto-magically
 added.
 
 Requires jQuery. If you use Python expressions, requires Skulpt. Basic
@@ -73,7 +73,7 @@ you can do that also:
 
 Please note that the value of _data-jsf_ needs to be valid JSON, so
 the attribute value (an associative array) needs to be set with the
-proper (single) quotes. Check out the example html files for more
+proper (single) quotes. Check out the example HTML files for more
 elaborate examples.
 
 
@@ -92,7 +92,7 @@ No. Use at your own risk. You have the source, now don't you? It's
 been used in a production system though, and no one died yet.
 
 
-### Why use namespaced attributes instead of 'data-' attributes? ###
+### Why use namespace attributes instead of 'data-' attributes? ###
 
 1. I like this better.
 2. It saves you from potential quote/double quote trouble.
@@ -107,8 +107,13 @@ executed. Your browser may explode, but only if you use IE.
 
 ### Does this make server side validation redundant? ###
 
-No it doesn't. Evil characters may still POST erroneous data to the
-server.
+No it doesn't. Those sympathising with the dark side may still POST
+erroneous data to the server.
+
+
+### Is this the One? The final solution to form validation?
+
+Of course it is.
 
 
 Validation
@@ -159,7 +164,7 @@ Example:
     <input type="text" name="age" />
     <input type="text" name="maritalstatus" jsf:relevant="age &gt; 8" />
 
-Relevance may also be applied to complete fieldsets, like so:
+Relevance may also be applied to complete field-sets, like so:
 
     <fieldset jsf:relevant="foo == 4">
     ...
