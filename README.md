@@ -77,6 +77,16 @@ proper (single) quotes. Check out the example HTML files for more
 elaborate examples.
 
 
+Installation
+------------
+
+Install using bower:
+
+    bower install jsforms
+
+Or just download, and include jsf.js as in the example above.
+
+
 Browser support
 ---------------
 
