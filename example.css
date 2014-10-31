@@ -10,7 +10,18 @@ label {
     display: block 
 }
 
-.error input, .error select { 
+form > div {
+    border: 1px solid #c0c0c0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+fieldset {
+    margin-bottom: 10px;
+}
+
+.error, .error input, .error select { 
     border-color: #ff0000; 
 }
 

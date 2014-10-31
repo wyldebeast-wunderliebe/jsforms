@@ -73,7 +73,8 @@ you can do that also:
 
 Please note that the value of _data-jsf_ needs to be valid JSON, so
 the attribute value (an associative array) needs to be set with the
-proper (single) quotes.
+proper (single) quotes. Check out the example html files for more
+elaborate examples.
 
 
 Browser support

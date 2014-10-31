@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="jsf.js"></script>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $("form").jsf({
+          selectInput: function(elt) { return elt.parent() }
+         });
+       });
+
+    </script>
+
+    <link href="example.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <form>
+
+      <div>
+        <label>Zipcode</label>
+        <div class="help">Zipcode must be formatted like [0-9]{4}[A-Z]{2}</div>
+        <input type="text" name="zipcode"
+               jsf:constraint="/[0-9]{4}[A-Z]{2}/.test(zipcode)"
+               />
+        <div class="alert">Zipcode should be four digits and two capital letters!</div>
+      </div>
+
+      <input type="submit" value="ok" />
+    </form>
+  </body>
+
+</html>

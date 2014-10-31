@@ -1,6 +1,6 @@
 {
   "name": "jsforms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "jsf.js",
   "title": "JSForms",
   "description": "Form validation jQuery plugin",

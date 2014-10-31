@@ -20,10 +20,8 @@ jsf.JavaScriptInterpreter = function() {
  */
 jsf.JavaScriptInterpreter.prototype.typeValue = function(val) {
 
-  intVal = parseInt(val);
-
-  if (!isNaN(intVal)) {
-    return intVal;
+  if (parseInt(val) == val) {
+    return parseInt(val);
   } else {
     return val;
   }
@@ -84,15 +82,17 @@ jsf.Validator = function(form, options) {
   // Do initial round to calulate relevance, requiredness, etc.
   self.validate();
 
+  // Set validation handling on changes
   self.form.find(":input").change(function(e) {
 
       var input = $(e.currentTarget);
-      self.validate(false, self.effective_inputs[input.attr("name")] || []);
+      self.validate(false, input,
+                    self.effective_inputs[input.attr("name")] || []);
   });
-  
+
   self.form.submit(function(e) {
-      
-      try {  
+
+      try {
         self.validate(true);
       }
       catch(err) {
@@ -261,10 +261,12 @@ jsf.Validator.prototype.errorCallback = function(elt, err, errType) {
 
 
 /**
- * Do the actual validation
- * @param processErrors Do error handling.
+ * Do the actual validation.
+ * @param processErrors Do error handling if set to true.
+ * @param tgtInput Input that triggered the validate action.
+ * @param inputs List of input elements to check. If not provided, check all.
  */
-jsf.Validator.prototype.validate = function(processErrors, inputs) {
+jsf.Validator.prototype.validate = function(processErrors, tgtInput, inputs) {
 
   var self = this;
   var data = {};
@@ -278,7 +280,7 @@ jsf.Validator.prototype.validate = function(processErrors, inputs) {
     inputs = self.check_inputs;
   }
 
-  self.form.find(":input").each(function() {          
+  self.form.find(":input").each(function() {
     data[$(this).attr("name")] = self.getValue($(this));
   });
 
@@ -289,10 +291,11 @@ jsf.Validator.prototype.validate = function(processErrors, inputs) {
     if (self.checkRelevant(input, data)) {
       self.checkRequired(input, data, processErrors);
     }
+    
     self.checkReadonly(input, data);
-    self.checkConstraint(input, data, processErrors);
+    self.checkConstraint(input, data, input.is(tgtInput) ? true : processErrors);
     self.calculate(input, data);
-  };
+  }
 
   self.form.removeClass("validate");
 };
@@ -353,7 +356,7 @@ jsf.Validator.prototype.getValue = function(input) {
  * @param type One of required, relevant, readonly, constraint or calculate
  */
 jsf.Validator.prototype.getExpression = function(input, type) {
-  
+
   return input.attr("jsf:" + type) || "";
 };
 
@@ -369,11 +372,11 @@ jsf.Validator.prototype.checkRequired = function(input, data, processErrors) {
   var self = this;
 
   var required_expr = self.getExpression(input, 'required');
-   
+
   if (!required_expr) {
     return false;
   }
-    
+
   var required = self.eval(required_expr, data, false);
 
   self.requiredCallback(input, required);
@@ -434,7 +437,7 @@ jsf.Validator.prototype.checkRelevant = function(input, data) {
 jsf.Validator.prototype.checkReadonly = function(input, data) {
 
   var readonly_expr = this.getExpression(input, 'readonly');
-   
+
   if (!readonly_expr) {
     return false;
   }
@@ -505,7 +508,7 @@ jsf.Validator.prototype.eval = function(expr, data, def) {
 
 
 // Extend jQuery objects with the jsf function
-$.fn.extend({jsf: function(options) { 
+$.fn.extend({jsf: function(options) {
       this.each(function() {
         new jsf.Validator($(this), options);
       });
