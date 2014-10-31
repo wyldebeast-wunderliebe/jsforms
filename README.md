@@ -96,26 +96,26 @@ does probably not include IE6. I didn't test; don't care.
 FAQ
 ---
 
-### Is it stable and ready for production? ###
+### Is it stable and ready for production?
 
 No. Use at your own risk. You have the source, now don't you? It's
 been used in a production system though, and no one died yet.
 
 
-### Why use namespace attributes instead of 'data-' attributes? ###
+### Why use namespace attributes instead of 'data-' attributes?
 
 1. I like this better.
 2. It saves you from potential quote/double quote trouble.
 3. JSF _does_ support the data-jsf variant too.
 
 
-### Is JSF a security consideration? ###
+### Is JSF a security consideration?
 
 Yes it is. Expressions are evaluated, so arbitrary code can be
 executed. Your browser may explode, but only if you use IE.
 
 
-### Does this make server side validation redundant? ###
+### Does this make server side validation redundant?
 
 No it doesn't. Those sympathising with the dark side may still POST
 erroneous data to the server.
@@ -220,9 +220,10 @@ Expressions
 
 Expressions can be either written in JavaScript or in Python. The
 latter uses Skulpt for running Python code, so make sure to include
-that JavaScript. Check the examples. An interpreter is specified by a
-'eval' method, that takes an expression, the context data and a
-default value:
+that JavaScript. Check the examples. Expressions are evaluated by an
+interpreter, that can be plugged in to the validation mechanism. An
+interpreter is specified by a 'eval' method, that takes an expression,
+the context data and a default value:
 
     jsf.Interpreter(expr, data, def)
 
@@ -231,7 +232,11 @@ returned. If you wish to write your own interpreter, for instance to
 allow Perl expressions, copy pyjsf.js and start coding...
 
 Expressions can use data from other inputs. Simply use the name of the
-input in the expression. Check example code.
+input in the expression:
+
+    <input name="foo" />
+
+    <input name="bar" jsf:required="foo == 23" />
 
 
 Configure validation
