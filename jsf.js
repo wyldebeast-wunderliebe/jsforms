@@ -290,10 +290,10 @@ jsf.Validator.prototype.validate = function(processErrors, tgtInput, inputs) {
 
     if (self.checkRelevant(input, data)) {
       self.checkRequired(input, data, processErrors);
+      self.checkConstraint(input, data, input.is(tgtInput) ? true : processErrors);
     }
     
     self.checkReadonly(input, data);
-    self.checkConstraint(input, data, input.is(tgtInput) ? true : processErrors);
     self.calculate(input, data);
   }
 
